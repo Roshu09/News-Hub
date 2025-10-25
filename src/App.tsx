@@ -13,6 +13,8 @@ interface Article {
 }
 
 function App() {
+ console.log('🚀 News Hub App Started - Latest Version');
+
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
