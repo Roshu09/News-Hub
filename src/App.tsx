@@ -69,25 +69,26 @@ function App() {
         }
         
       } catch (err) {
-        console.error('❌ API Error:', err);
-        
-        // Fallback to mock data with clear indication
-        console.log('🔄 Falling back to mock data...');
-        await new Promise(resolve => setTimeout(resolve, 800));
-        const mockArticles = generateMockArticles(page, searchQuery, category);
-        
-        if (page === 1) {
-          setArticles(mockArticles);
-        } else {
-          setArticles(prev => [...prev, ...mockArticles]);
-        }
-        setHasMore(page < 3);
-        
-        // Show error only if it's not a CORS issue
-        if (!err.message.includes('CORS') && !err.message.includes('Failed to fetch')) {
-          setError('Failed to load real news. Using sample data instead.');
-        }
-      } finally {
+  console.error('❌ API Error:', err);
+  
+  // Fallback to mock data with clear indication
+  console.log('🔄 Falling back to mock data...');
+  await new Promise(resolve => setTimeout(resolve, 800));
+  const mockArticles = generateMockArticles(page, searchQuery, category);
+  
+  if (page === 1) {
+    setArticles(mockArticles);
+  } else {
+    setArticles(prev => [...prev, ...mockArticles]);
+  }
+  setHasMore(page < 3);
+  
+  // Show error only if it's not a CORS issue
+  const errorMessage = err instanceof Error ? err.message : String(err);
+  if (!errorMessage.includes('CORS') && !errorMessage.includes('Failed to fetch')) {
+    setError('Failed to load real news. Using sample data instead.');
+  }
+} finally {
         setLoading(false);
       }
     };
