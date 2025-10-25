@@ -27,56 +27,51 @@ function App() {
   const categories = ['general', 'technology', 'business', 'sports', 'health', 'entertainment', 'science'];
 
   useEffect(() => {
-    const fetchNews = async () => {
-      setLoading(true);
-      setError(null);
+  const fetchNews = async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        if (!API_KEY) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          const mockArticles = generateMockArticles(page, searchQuery, category);
-          
-          if (page === 1) {
-            setArticles(mockArticles);
-          } else {
-            setArticles(prev => [...prev, ...mockArticles]);
-          }
-          setHasMore(page < 3);
+    try {
+      if (!API_KEY) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const mockArticles = generateMockArticles(page, searchQuery, category);
+        
+        if (page === 1) {
+          setArticles(mockArticles);
         } else {
-  let url = '';
-  if (searchQuery) {
-    url = `https://gnews.io/api/v4/search?q=${searchQuery}&lang=en&max=10&page=${page}&apikey=${API_KEY}`;
-  } else {
-    url = `https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&max=10&page=${page}&apikey=${API_KEY}`;
-  }
+          setArticles(prev => [...prev, ...mockArticles]);
+        }
+        setHasMore(page < 3);
+      } else {
+        let url = '';
+        if (searchQuery) {
+          url = `https://gnews.io/api/v4/search?q=${searchQuery}&lang=en&max=10&page=${page}&apikey=${API_KEY}`;
+        } else {
+          url = `https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&max=10&page=${page}&apikey=${API_KEY}`;
+        }
 
-  console.log('Fetching from URL:', url);
-  
-  const response = await fetch(url);
-  console.log('Response status:', response.status);
-  
-  if (!response.ok) throw new Error('Failed to fetch news');
-  
-  const data = await response.json();
-  console.log('API Response:', data);
-  
-  if (page === 1) {
-    setArticles(data.articles);
-  } else {
-    setArticles(prev => [...prev, ...data.articles]);
-  }
-  setHasMore(data.articles.length === 10);
-}
-      } catch (err) {
-        setError('Failed to load news. Please check your API key or try again later.');
-        console.error(err);
-      } finally {
-        setLoading(false);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch news');
+        
+        const data = await response.json();
+        
+        if (page === 1) {
+          setArticles(data.articles);
+        } else {
+          setArticles(prev => [...prev, ...data.articles]);
+        }
+        setHasMore(data.articles.length === 10);
       }
-    };
+    } catch (err) {
+      setError('Failed to load news. Please check your API key or try again later.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchNews();
-  }, [searchQuery, category, page]);
+  fetchNews();
+}, [searchQuery, category, page]);
 
   const generateMockArticles = (page: number, query: string, cat: string): Article[] => {
     const topics = query || cat;
@@ -173,11 +168,7 @@ function App() {
         </div>
       </header>
 
-      {!API_KEY && (
-        <div className="demo-notice">
-         <p>📢 <strong>Demo Mode:</strong> Add your GNews API key to the .env file to see real news.</p>
-        </div>
-      )}
+     
 
       <main className="main-content">
         {loading && page === 1 && (
@@ -272,7 +263,7 @@ function App() {
 
       <footer className="footer">
         <div className="footer-content">
-          <p>Built with React & CSS • Powered by GNews API</p>
+          <p>Built with React & CSS • News Feed Application</p>
         </div>
       </footer>
     </div>
